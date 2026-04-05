@@ -280,9 +280,6 @@ export default function TaggingView({ initialModule, onSave, onCancel }) {
                     onChange={(event) => updateTagLabel(tag.id, event.target.value)}
                     className="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-teal"
                   />
-                  <p className="mt-2 text-xs text-slate-500">
-                    {tag.x.toFixed(1)}%, {tag.y.toFixed(1)}%
-                  </p>
                 </div>
                 <button
                   type="button"
