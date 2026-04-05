@@ -91,9 +91,6 @@ export default function Dashboard({ modules, onCreate, onEdit, onQuiz, onDelete 
         <div className="max-w-2xl">
           <p className="text-sm uppercase tracking-[0.25em] text-teal">Diagram Study Lab</p>
           <h1 className="mt-3 font-display text-4xl text-white md:text-5xl">Tag visual diagrams and drill recall fast.</h1>
-          <p className="mt-4 text-sm leading-6 text-slate-300 md:text-base">
-            Use percentage-based markers so each tag stays locked to the right anatomical structure at any screen size.
-          </p>
         </div>
 
         <button
