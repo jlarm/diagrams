@@ -138,23 +138,24 @@ export default function TaggingView({ initialModule, onSave, onCancel }) {
           </button>
         </div>
 
-        <div className="mt-6 grid gap-4 md:grid-cols-[minmax(0,1fr)_220px]">
+        <div className="mt-6 grid gap-4 md:grid-cols-[minmax(0,1fr)_240px] md:items-end">
           <label className="space-y-2">
             <span className="text-sm font-medium text-slate-200">Module Title</span>
             <input
               value={title}
               onChange={(event) => setTitle(event.target.value)}
               placeholder="Human kidney, heart chambers, leaf anatomy..."
-              className="w-full rounded-2xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none transition focus:border-teal"
+              className="w-full rounded-2xl border border-slate-700 bg-slate-950/80 px-4 py-4 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-teal"
             />
           </label>
 
-          <label className="flex cursor-pointer flex-col justify-center rounded-2xl border border-dashed border-slate-700 bg-slate-950/70 px-4 py-3 text-sm text-slate-300 transition hover:border-teal">
-            <span className="inline-flex items-center gap-2 font-medium text-white">
-              <ImagePlus className="h-4 w-4 text-teal" />
+          <label className="flex h-[58px] cursor-pointer items-center justify-center gap-3 rounded-2xl border border-dashed border-slate-700 bg-slate-950/60 px-5 text-sm font-medium text-white transition hover:border-teal hover:bg-slate-950/80">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-teal/20 bg-teal/10 text-teal">
+              <ImagePlus className="h-5 w-5" />
+            </span>
+            <span className="text-base">
               Upload Image
             </span>
-            <span className="mt-1 text-xs text-slate-400">Stored in localStorage as Base64.</span>
             <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
           </label>
         </div>
