@@ -136,7 +136,9 @@ export default function QuizView({ module, onBack }) {
             return (
               <div
                 key={tag.id}
-                className="absolute -translate-x-1/2 -translate-y-1/2"
+                className={`absolute -translate-x-1/2 -translate-y-1/2 ${
+                  activeTagId === tag.id ? 'z-20' : 'z-0'
+                }`}
                 style={{ left: `${tag.x}%`, top: `${tag.y}%` }}
               >
                 <button
