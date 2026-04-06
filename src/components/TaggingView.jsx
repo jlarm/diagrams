@@ -2,8 +2,39 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ImagePlus, Save, Trash2, MapPinned, PencilLine } from 'lucide-react';
 import { createId } from '../lib/storage';
 
+const HEIC_MIME_TYPES = new Set([
+  'image/heic',
+  'image/heif',
+  'image/heic-sequence',
+  'image/heif-sequence',
+]);
+
 function clampPercentage(value) {
   return Math.min(100, Math.max(0, value));
+}
+
+function isHeicFile(file) {
+  return HEIC_MIME_TYPES.has(file.type.toLowerCase()) || /\.(heic|heif)$/i.test(file.name);
+}
+
+function readBlobAsDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(reader.error ?? new Error('Failed to read image file.'));
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function convertHeicToJpeg(file) {
+  const { default: heic2any } = await import('heic2any');
+  const convertedImage = await heic2any({
+    blob: file,
+    toType: 'image/jpeg',
+    quality: 0.92,
+  });
+
+  return Array.isArray(convertedImage) ? convertedImage[0] : convertedImage;
 }
 
 function TagPin({ index, tag }) {
@@ -26,6 +57,7 @@ export default function TaggingView({ initialModule, onSave, onCancel }) {
   const [pendingTag, setPendingTag] = useState(null);
   const [pendingLabel, setPendingLabel] = useState('');
   const [error, setError] = useState('');
+  const [isProcessingImage, setIsProcessingImage] = useState(false);
   const imageAreaRef = useRef(null);
   const popoverInputRef = useRef(null);
 
@@ -35,19 +67,34 @@ export default function TaggingView({ initialModule, onSave, onCancel }) {
     }
   }, [pendingTag]);
 
-  const handleImageUpload = (event) => {
+  const handleImageUpload = async (event) => {
+    const input = event.target;
     const file = event.target.files?.[0];
     if (!file) {
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      setImageData(String(reader.result));
+    setError('');
+    setIsProcessingImage(true);
+
+    try {
+      const imageBlob = isHeicFile(file) ? await convertHeicToJpeg(file) : file;
+      const nextImageData = await readBlobAsDataUrl(imageBlob);
+
+      setImageData(nextImageData);
       setPendingTag(null);
       setPendingLabel('');
-    };
-    reader.readAsDataURL(file);
+    } catch (uploadError) {
+      console.error('Failed to process uploaded image', uploadError);
+      setError(
+        isHeicFile(file)
+          ? 'Could not convert that HEIC image. Try a different file.'
+          : 'Could not read that image file. Try a different file.'
+      );
+    } finally {
+      input.value = '';
+      setIsProcessingImage(false);
+    }
   };
 
   const handleImageClick = (event) => {
@@ -100,6 +147,11 @@ export default function TaggingView({ initialModule, onSave, onCancel }) {
   };
 
   const handleSave = () => {
+    if (isProcessingImage) {
+      setError('Wait for image processing to finish before saving.');
+      return;
+    }
+
     const trimmedTitle = title.trim();
     if (!trimmedTitle || !imageData) {
       setError('Add a title and upload an image before saving.');
@@ -149,14 +201,26 @@ export default function TaggingView({ initialModule, onSave, onCancel }) {
             />
           </label>
 
-          <label className="flex h-[58px] cursor-pointer items-center justify-center gap-3 rounded-2xl border border-dashed border-slate-700 bg-slate-950/60 px-5 text-sm font-medium text-white transition hover:border-teal hover:bg-slate-950/80">
+          <label
+            className={`flex h-[58px] items-center justify-center gap-3 rounded-2xl border border-dashed border-slate-700 bg-slate-950/60 px-5 text-sm font-medium text-white transition ${
+              isProcessingImage
+                ? 'cursor-wait opacity-70'
+                : 'cursor-pointer hover:border-teal hover:bg-slate-950/80'
+            }`}
+          >
             <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-teal/20 bg-teal/10 text-teal">
               <ImagePlus className="h-5 w-5" />
             </span>
             <span className="text-base">
-              Upload Image
+              {isProcessingImage ? 'Processing Image...' : 'Upload Image'}
             </span>
-            <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+            <input
+              type="file"
+              accept="image/*,.heic,.heif,image/heic,image/heif"
+              onChange={handleImageUpload}
+              disabled={isProcessingImage}
+              className="hidden"
+            />
           </label>
         </div>
 
@@ -244,7 +308,12 @@ export default function TaggingView({ initialModule, onSave, onCancel }) {
           <button
             type="button"
             onClick={handleSave}
-            className="inline-flex items-center gap-2 rounded-full bg-coral px-5 py-3 font-semibold text-slate-950 transition hover:bg-coral/90"
+            disabled={isProcessingImage}
+            className={`inline-flex items-center gap-2 rounded-full px-5 py-3 font-semibold text-slate-950 transition ${
+              isProcessingImage
+                ? 'cursor-not-allowed bg-coral/60'
+                : 'bg-coral hover:bg-coral/90'
+            }`}
           >
             <Save className="h-4 w-4" />
             Save Module
