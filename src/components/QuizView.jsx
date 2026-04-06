@@ -153,7 +153,7 @@ export default function QuizView({ module, onBack }) {
                   {index + 1}
                 </button>
 
-                {(attempt.revealed || attempt.status === 'correct') && (
+                {(attempt.revealed || attempt.status === 'correct') && activeTagId !== tag.id && (
                   <div className="pointer-events-none absolute left-1/2 top-12 w-max max-w-[180px] -translate-x-1/2 rounded-2xl border border-slate-700 bg-slate-950/95 px-3 py-2 text-xs font-medium text-white shadow-xl">
                     {tag.label}
                   </div>
@@ -198,6 +198,12 @@ export default function QuizView({ module, onBack }) {
                         Reveal
                       </button>
                     </div>
+                    {attempt.revealed ? (
+                      <div className="mt-3 rounded-2xl border border-gold/35 bg-gold/10 px-3 py-3">
+                        <p className="text-[11px] uppercase tracking-[0.2em] text-gold">Answer</p>
+                        <p className="mt-1 text-sm font-medium text-white">{tag.label}</p>
+                      </div>
+                    ) : null}
                     {attempt.status === 'correct' ? (
                       <p className="mt-3 inline-flex items-center gap-2 text-xs font-medium text-emerald-300">
                         <CheckCircle2 className="h-4 w-4" />
