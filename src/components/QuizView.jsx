@@ -175,7 +175,7 @@ export default function QuizView({ module, onBack }) {
                       value={attempt.guess}
                       onChange={(event) => updateGuess(tag.id, event.target.value)}
                       placeholder="Type your answer"
-                      className="mt-3 w-full rounded-2xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-teal"
+                      className="mt-3 w-full rounded-2xl border border-slate-700 bg-slate-900 px-3 py-2 text-base text-slate-100 outline-none transition focus:border-teal md:text-sm"
                       onKeyDown={(event) => {
                         if (event.key === 'Enter') {
                           submitGuess(tag);

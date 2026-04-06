@@ -202,7 +202,7 @@ export default function TaggingView({ initialModule, onSave, onCancel, isSaving 
               value={title}
               onChange={(event) => setTitle(event.target.value)}
               placeholder="Human kidney, heart chambers, leaf anatomy..."
-              className="w-full rounded-2xl border border-slate-700 bg-slate-950/80 px-4 py-4 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-teal"
+              className="w-full rounded-2xl border border-slate-700 bg-slate-950/80 px-4 py-4 text-base text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-teal md:text-sm"
             />
           </label>
 
@@ -263,7 +263,7 @@ export default function TaggingView({ initialModule, onSave, onCancel, isSaving 
                     value={pendingLabel}
                     onChange={(event) => setPendingLabel(event.target.value)}
                     placeholder="Enter part name"
-                    className="mt-3 w-full rounded-2xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-teal"
+                    className="mt-3 w-full rounded-2xl border border-slate-700 bg-slate-900 px-3 py-2 text-base text-slate-100 outline-none transition focus:border-teal md:text-sm"
                     onKeyDown={(event) => {
                       if (event.key === 'Enter') {
                         addTag();
@@ -353,7 +353,7 @@ export default function TaggingView({ initialModule, onSave, onCancel, isSaving 
                   <input
                     value={tag.label}
                     onChange={(event) => updateTagLabel(tag.id, event.target.value)}
-                    className="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-teal"
+                    className="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-900 px-3 py-2 text-base text-slate-100 outline-none transition focus:border-teal md:text-sm"
                   />
                 </div>
                 <button
