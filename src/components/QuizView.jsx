@@ -125,7 +125,7 @@ export default function QuizView({ module, onBack }) {
           </button>
         </div>
 
-        <div className="relative mt-6">
+        <div className="relative mt-6" onClick={() => setActiveTagId(null)}>
           <div className="overflow-hidden rounded-[2rem] border border-slate-800 bg-slate-950">
             <img src={module.imageData} alt={module.title} className="block w-full object-contain" />
           </div>
@@ -140,6 +140,7 @@ export default function QuizView({ module, onBack }) {
                   activeTagId === tag.id ? 'z-20' : 'z-0'
                 }`}
                 style={{ left: `${tag.x}%`, top: `${tag.y}%` }}
+                onClick={(event) => event.stopPropagation()}
               >
                 <button
                   type="button"
@@ -160,7 +161,16 @@ export default function QuizView({ module, onBack }) {
 
                 {activeTagId === tag.id && (
                   <div className="absolute left-1/2 top-12 z-30 w-64 -translate-x-1/2 rounded-3xl border border-slate-700 bg-slate-950/95 p-4 shadow-2xl backdrop-blur">
-                    <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Pin {index + 1}</p>
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Pin {index + 1}</p>
+                      <button
+                        type="button"
+                        onClick={() => setActiveTagId(null)}
+                        className="rounded-full px-2 py-1 text-xs font-medium text-slate-300 transition hover:bg-slate-800"
+                      >
+                        Close
+                      </button>
+                    </div>
                     <input
                       value={attempt.guess}
                       onChange={(event) => updateGuess(tag.id, event.target.value)}
