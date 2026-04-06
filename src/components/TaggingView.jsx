@@ -50,7 +50,7 @@ function TagPin({ index, tag }) {
   );
 }
 
-export default function TaggingView({ initialModule, onSave, onCancel }) {
+export default function TaggingView({ initialModule, onSave, onCancel, isSaving = false }) {
   const [title, setTitle] = useState(initialModule?.title ?? '');
   const [imageData, setImageData] = useState(initialModule?.imageData ?? '');
   const [tags, setTags] = useState(initialModule?.tags ?? []);
@@ -149,6 +149,11 @@ export default function TaggingView({ initialModule, onSave, onCancel }) {
   const handleSave = () => {
     if (isProcessingImage) {
       setError('Wait for image processing to finish before saving.');
+      return;
+    }
+
+    if (isSaving) {
+      setError('Saving is already in progress.');
       return;
     }
 
@@ -308,15 +313,15 @@ export default function TaggingView({ initialModule, onSave, onCancel }) {
           <button
             type="button"
             onClick={handleSave}
-            disabled={isProcessingImage}
+            disabled={isProcessingImage || isSaving}
             className={`inline-flex items-center gap-2 rounded-full px-5 py-3 font-semibold text-slate-950 transition ${
-              isProcessingImage
+              isProcessingImage || isSaving
                 ? 'cursor-not-allowed bg-coral/60'
                 : 'bg-coral hover:bg-coral/90'
             }`}
           >
             <Save className="h-4 w-4" />
-            Save Module
+            {isSaving ? 'Saving...' : 'Save Module'}
           </button>
         </div>
       </div>
