@@ -27,14 +27,12 @@ function readBlobAsDataUrl(blob) {
 }
 
 async function convertHeicToJpeg(file) {
-  const { default: heic2any } = await import('heic2any');
-  const convertedImage = await heic2any({
+  const { heicTo } = await import('heic-to');
+  return heicTo({
     blob: file,
-    toType: 'image/jpeg',
+    type: 'image/jpeg',
     quality: 0.92,
   });
-
-  return Array.isArray(convertedImage) ? convertedImage[0] : convertedImage;
 }
 
 function TagPin({ index, tag }) {
@@ -86,10 +84,11 @@ export default function TaggingView({ initialModule, onSave, onCancel, isSaving 
       setPendingLabel('');
     } catch (uploadError) {
       console.error('Failed to process uploaded image', uploadError);
+      const detail = uploadError?.message ? ` (${uploadError.message})` : '';
       setError(
         isHeicFile(file)
-          ? 'Could not convert that HEIC image. Try a different file.'
-          : 'Could not read that image file. Try a different file.'
+          ? `Could not convert that HEIC image${detail}. Try a different file.`
+          : `Could not read that image file${detail}. Try a different file.`
       );
     } finally {
       input.value = '';
